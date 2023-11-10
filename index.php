@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,74 +9,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js"
-            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous">
-    </script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous">
+        </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
     <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <link href="output.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/002afb9e14.js" crossorigin="anonymous"></script>
 </head>
 
 <body class="min-h-screen flex flex-col">
-<nav>
-    <div class="navbar bg-base-200">
-        <div class="navbar-start">
-            <a href="./" class="mx-10 text-lg font-thin">Brand name</a>
-        </div>
-        <!--<div class="navbar-start md:navbar-center relative">
+    <nav>
+        <div class="navbar bg-base-200">
+            <div class="navbar-start">
+                <a href="./" class="mx-10 text-lg font-thin">Brand name</a>
+            </div>
+            <!--<div class="navbar-start md:navbar-center relative">
             <input id="searchInput" type="search" placeholder="Search movies.."
                    class="input input-primary w-44 md:w-full text-inherit/50 pl-10"/>
             <span class="absolute flex items-center pl-3">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </span>
         </div>-->
-        <div class="navbar-end gap-3 sm:mr-5">
-            <div class="dropdown dropdown-bottom">
-                <label tabindex="0" class="btn-sm rounded-btn cursor-pointer">
-                    Hello, User!
-                    <i class="fa-regular fa-face-smile"></i>
-                </label>
-                <ul class="dropdown-content z-[1] menu p-2 drop-shadow bg-base-200 rounded-box w-24" tabindex="0">
-                    <li><a href=""><i class="fa-solid fa-user"></i>Profile</a></li>
-                    <li><a href=""><i class="fa-solid fa-right-from-bracket"></i>Logout</a></li>
-                </ul>
+            <div class="navbar-end gap-3 sm:mr-5">
+                <?php if (isset($_SESSION['userid'])) {
+                    echo '<div class="dropdown dropdown-bottom">
+                    <label tabindex="0" class="btn-sm rounded-btn cursor-pointer">
+                        Hello, User!
+                        <i class="fa-regular fa-face-smile"></i>
+                    </label>
+                    <ul class="dropdown-content z-[1] menu p-2 drop-shadow bg-base-200 rounded-box w-28" tabindex="0">
+                        <li><a onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i>Logout</a></li>
+                    </ul>
+                </div>';
+                } else {
+                    echo '<div class="grid grid-cols-2 gap-2">
+                    <a href="./login" class="btn btn-outline btn-ghost">Login</a>
+                    <a href="./signup" class="btn btn-outline btn-primary">Sign up</a>
+                </div>';
+                } ?>
             </div>
         </div>
-    </div>
-</nav>
-<main>
-    <div id="mainDiv" class="container mx-auto my-5 grid grid-cols-1">
-        <div class="flex mx-5 my-5">
-            <h1 class="text-2xl font-bold">Popular Today</h1>
-        </div>
-        <div id="carousel-popular"
-             class="carousel carousel-center justify-center rounded-box gap-5 mx-5 drop-shadow-xl snap-x overflow-x-scroll">
-            <div class="grid grid-cols-1 place-items-center gap-5">
-                <span class="loading loading-spinner loading-lg"></span>
+    </nav>
+    <main>
+        <div id="mainDiv" class="container mx-auto my-5 grid grid-cols-1">
+            <div class="flex mx-5 my-5">
+                <h1 class="text-2xl font-bold">Popular Today</h1>
+            </div>
+            <div id="carousel-popular"
+                class="carousel carousel-center justify-center rounded-box gap-5 mx-5 drop-shadow-xl snap-x overflow-x-scroll">
+                <div class="grid grid-cols-1 place-items-center gap-5">
+                    <span class="loading loading-spinner loading-lg"></span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="container mx-auto my-5 grid grid-cols-1">
-        <div class="flex mx-5 my-5">
-            <h1 class="text-2xl font-bold">Recent Reviews</h1>
-        </div>
-        <div id="carousel-reviews"
-             class="carousel carousel-center justify-center rounded-box gap-5 mx-5 drop-shadow-xl snap-x overflow-x-scroll">
-            <div class="grid grid-cols-1 place-items-center gap-5">
-                <span class="loading loading-spinner loading-lg"></span>
+        <div class="container mx-auto my-5 grid grid-cols-1">
+            <div class="flex mx-5 my-5">
+                <h1 class="text-2xl font-bold">Recent Reviews</h1>
+            </div>
+            <div id="carousel-reviews"
+                class="carousel carousel-center justify-center rounded-box gap-5 mx-5 drop-shadow-xl snap-x overflow-x-scroll">
+                <div class="grid grid-cols-1 place-items-center gap-5">
+                    <span class="loading loading-spinner loading-lg"></span>
+                </div>
+            </div>
+            <div id="reviewGrid" class="grid grid-cols-1 place-items-center mt-5 gap-5">
+                <a href="movies" class="btn btn-sm md:btn-md btn-primary">Explore Movies</a>
             </div>
         </div>
-        <div id="reviewGrid" class="grid grid-cols-1 place-items-center mt-5 gap-5">
-            <a href="movies" class="btn btn-sm md:btn-md btn-primary">Explore Movies</a>
-        </div>
-    </div>
-</main>
-<footer class="footer footer-center p-4 bg-base-300 text-base-content mt-auto">
-    <aside>
-        <p class="font-thin">made by CLSU BSIT 4-2 students</p>
-    </aside>
-</footer>
+    </main>
+    <footer class="footer footer-center p-4 bg-base-300 text-base-content mt-auto">
+        <aside>
+            <p class="font-thin">made by CLSU BSIT 4-2 students</p>
+        </aside>
+    </footer>
 </body>
+
 </html>
 <script>
     $(document).ready(() => {
@@ -98,16 +108,16 @@
     $('#searchInput').on('keyup', function () {
         debounceSearch($(this).val());
     });
-    function loadReviews(){
+    function loadReviews() {
         $.ajax({
             method: 'get',
             url: 'api.php',
             data: {
                 getMovies: true
             },
-            success: function(moviesResponse){
+            success: function (moviesResponse) {
                 let movies = JSON.parse(moviesResponse);
-                if (movies.error){
+                if (movies.error) {
                     console.error('Error fetching movies: ', movies.error);
                 }
                 let moviesById = {};
@@ -120,22 +130,30 @@
                     data: {
                         getReviews: true
                     },
-                    success: function(reviewsResponse){
+                    success: function (reviewsResponse) {
                         let reviews = JSON.parse(reviewsResponse);
-                        if(reviews.error){
+                        if (reviews.error) {
                             reviewsCarousel.empty();
-                            reviewGrid.prepend(`
+                            (<?php if (isset($_SESSION['userid'])) {
+                                echo "true";
+                            } else {
+                                echo "false";
+                            } ?> ? reviewGrid.prepend(`
                                 <h1 class="text-md text-center font-thin mx-5 max-w-screen-sm md:text-lg">
                                     There are no reviews for any movies at the moment, go make one and be the first!
                                 </h1>
-                            `);
+                            `) : reviewGrid.prepend(`
+                                <h1 class="text-md text-center font-thin mx-5 max-w-screen-sm md:text-lg">
+                                    There are no reviews for any movies at the moment. Log in to make one!
+                                </h1>
+                            `))
                         }
                         else {
                             reviewsCarousel.empty();
                             reviews.forEach(review => {
                                 let movie = moviesById[review.movie_id];
                                 console.log(movie);
-                                if(movie) {
+                                if (movie) {
                                     reviewsCarousel.append(`
                                         <div class="card bg-neutral">
                                             <div class="card-body">
@@ -295,6 +313,24 @@
         });
         return false;
     }
-
-
+    function logout() {
+        $.ajax({
+            url: 'api.php',
+            type: 'post',
+            data: {
+                logout: true,
+            },
+            success: function (response) {
+                const res = JSON.parse(response);
+                if (res.success) {
+                    window.location.href = './login';
+                } else {
+                    alert(res.error);
+                }
+            }
+        });
+    }
+    setTimeout(function () {
+        logout(); // Call the logout function after 30 minutes
+    }, 30 * 60 * 1000);
 </script>
