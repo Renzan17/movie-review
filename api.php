@@ -68,13 +68,23 @@ if (isset($_POST['signup'])) {
 }
 
 if (isset($_GET['getMovies'])) {
-    $db->select('movies');
-    if (count($db->res) > 0) {
-        echo json_encode($db->res);
+    if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+        $db->select('movies', '*', "id='{$id}'");
+        if (count($db->res) > 0) {
+            echo json_encode($db->res);
+        } else {
+            echo json_encode(array('error' => 'There are no movies with this id.'));
+        }
     } else {
-        echo json_encode(array('error' => 'There are currently no movies in the database. Try again later.'));
+        $db->select('movies');
+        if (count($db->res) > 0) {
+            echo json_encode($db->res);
+        } else {
+            echo json_encode(array('error' => 'There are currently no movies in the database. Try again later.'));
+        }
     }
-    /*echo json_encode(array('error' => 'There are currently no movies in the database. Try again later.'));*/
+
 }
 
 if (isset($_GET['getReviews'])) {
@@ -120,5 +130,20 @@ if (isset($_POST['submitReview'])) {
 
 if (isset($_POST['logout'])) {
     session_destroy();
-    echo json_encode(array('success' => 'Logged out successfully'));   
+    echo json_encode(array('success' => 'Logged out successfully'));
+}
+
+if (isset($_GET['getMovieReviews'])) {
+    $movie_id = $_GET['movieId'];
+    try {
+        $db->select('reviews', '*', "movie_id={$movie_id}");
+        if (count($db->res) === 0) {
+            echo json_encode(array("error" => "There are no reviews for this movie."));
+        }
+        if (count($db->res) > 0) {
+            echo json_encode($db->res);
+        }
+    } catch (Exception $e) {
+        echo json_encode(array("error" => $e->getMessage()));
+    }
 }
