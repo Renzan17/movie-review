@@ -33,6 +33,15 @@ if (isset($_GET['searchMovies'])) {
             'accept' => 'application/json',
         ],
     ]);
+    //if (isset($_GET['searchMovies'])) {
+    $query = $_GET['query'];
+    $db->select('movies', '*', "title LIKE '%$query%' OR overview LIKE '%$query%'");
+    if (count($db->res) > 0) {
+        echo json_encode($db->res);
+    } else {
+        echo json_encode(array());
+    }
+}
 
     echo $response->getBody();
 }
